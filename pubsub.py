@@ -3,6 +3,7 @@ import uuid
 import json
 from timeit import defaulttimer
 from datetime import datetime
+from twiden import logging
 
 
 CHANNEL = 'twiden'
@@ -12,8 +13,12 @@ class Subscriber(object):
 
     def __init__(self, redis, name):
         self.redis = redis
-        self.logger = getLogger(name)
+        self.logger = logging.getLogger(name)
 
+    """Publish a message to channel
+    @param: handler A callable
+    @param: filters A list of _meta fields mapping to boolean functions
+	"""
     def subscribe(self, handler, filters):
         pubsub = self.redis.pubsub()
         pubsub.subscribe([CHANNEL])
@@ -35,8 +40,17 @@ class Publisher(object):
 
     def __init__(self, redis, name):
         self.redis = redis
-        self.logger = getLogger(name)
+        self.logger = logging.getLogger(name)
 
+    """Publish a message to channel
+    Keyword arguments:
+    @param: data Dictionary message
+    @param: topic Describe message
+    @param: version Version of message format. For example '1.0'
+    @param: causation_id Id of the message/event that preceeded this one
+    @param: correlation_id Id of the first message/event in this chain of events
+
+    """
     def publish(self, data, topic, version, causation_id=None, correlation_id=None):
         message = data.copy()
         message.update({'_meta': {
