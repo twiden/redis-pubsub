@@ -22,7 +22,7 @@ class Subscriber(object):
     def subscribe(self, handler, filters):
         pubsub = self.redis.pubsub()
         pubsub.subscribe([CHANNEL])
-        self.logger.info({'what': 'waiting for messages'})
+        self.logger.info(what='waiting for messages')
         for message in pubsub.listen():
             try:
                 data = json.loads(message['data'])
