@@ -24,6 +24,7 @@ class Subscriber(object):
         pubsub.subscribe([CHANNEL])
         self.logger.info(what='waiting for messages')
         for message in pubsub.listen():
+            data = {}
             try:
                 data = json.loads(message['data'])
                 meta = data['_meta']
