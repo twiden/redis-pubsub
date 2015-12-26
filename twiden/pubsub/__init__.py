@@ -1,7 +1,7 @@
 import redis
 import uuid
 import json
-from timeit import defaulttimer
+from timeit import default_timer as timer
 from datetime import datetime
 from twiden import logging
 
@@ -31,9 +31,9 @@ class Subscriber(object):
                     start = timer()
                     handler(data)
                     end = timer()
-                    self.logger.info({'what': 'handler ok', 'message': data, 'time': end - start})
+                    self.logger.info(what='handler ok', message=data, time=end - start)
             except Exception as ex:
-                self.logger.error({'what': 'handler failed', 'message': data, 'exception': str(ex)})
+                self.logger.error(what='handler failed', message=data, exception=str(ex))
 
 
 class Publisher(object):
@@ -57,10 +57,10 @@ class Publisher(object):
             'id': str(uuid1()),
             'version': version,
             'topic': topic,
-            'utc_timestamp': datetime.utcnow().isoformat()
+            'utc_timestamp': datetime.utcnow().isoformat(),
             'causation_id': causation_id,
             'correlation_id': correlation_id
             }
         })
         self.redis.publish(CHANNEL, json.dumps(message))
-        self.logger.info({'what': 'message published', 'message': message})
+        self.logger.info(what='message published', message=message)
