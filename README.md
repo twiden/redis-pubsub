@@ -2,8 +2,10 @@
 Python Redis pub-sub library
 
 ```python
+import redis
 import random
 import time
+from twiden.pubsub import Publisher, Subscriber
 
 def send():
 	r = redis.Redis(host='127.0.0.1')
