@@ -10,7 +10,5 @@ setup(
     author='Tobias Widén',
     author_email='tobbetrollkarl[.a.t.]gmail.com',
     url='https://www.python.org/sigs/distutils-sig/',
-    packages=['twiden', 'twiden.pubsub'],
-    install_requires=[],
-    dependency_links=[]
+    packages=['twiden', 'twiden.pubsub']
 )
