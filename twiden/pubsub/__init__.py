@@ -55,7 +55,7 @@ class Publisher(object):
     def publish(self, data, topic, version, causation_id=None, correlation_id=None):
         message = data.copy()
         message.update({'_meta': {
-            'id': str(uuid1()),
+            'id': str(uuid.uuid1()),
             'version': version,
             'topic': topic,
             'utc_timestamp': datetime.utcnow().isoformat(),
