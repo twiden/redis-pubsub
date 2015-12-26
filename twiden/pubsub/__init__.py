@@ -1,6 +1,7 @@
 import redis
 import uuid
 import json
+import socket
 from timeit import default_timer as timer
 from datetime import datetime
 from twiden import logging
@@ -61,6 +62,8 @@ class Publisher(object):
             'utc_timestamp': datetime.utcnow().isoformat(),
             'causation_id': causation_id,
             'correlation_id': correlation_id
+            'hostname': socket.gethostname()
+            'ip_address': socket.gethostbyname(socket.gethostname())
             }
         })
         self.redis.publish(CHANNEL, json.dumps(message))
