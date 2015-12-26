@@ -24,5 +24,7 @@ def receive():
 	Subscriber(r, 'my consumer').subscribe(handler, filters)
 
 def handler(m):
-	time.sleep(float(m['sleep']))
+	zzz = m['sleep']
+	print 'Sleeping', zzz
+	time.sleep(zzz)
 ```
