@@ -62,7 +62,7 @@ class Publisher(object):
             'utc_timestamp': datetime.utcnow().isoformat(),
             'causation_id': causation_id,
             'correlation_id': correlation_id,
-            'hostname': socket.gethostname()
+            'hostname': socket.gethostname(),
             'ip_address': socket.gethostbyname(socket.gethostname())
             }
         })
