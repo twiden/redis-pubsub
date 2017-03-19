@@ -30,6 +30,14 @@ class Subscriber(object):
             try:
                 data = json.loads(message['data'])
                 meta = data['_meta']
+                self.logger.info(what='handler_ok', message=message['data'])
+            except TypeError:
+                self.logger.error(
+                    what='message_is_not_json',
+                    message_id=message['_meta']['id'],
+                )
+                continue
+            try:
                 if all(validator(meta.get(field)) for field, validator in filters.items()):
                     start = timer()
                     handler(data)
