@@ -18,7 +18,7 @@ class Subscriber(object):
         self.redis = redis
         self.logger = logging.getLogger(name)
 
-    """Publish a message to channel
+    """Subscribe to channel
     @param: handler A callable
     @param: filters A list of _meta fields mapping to boolean functions
     """
