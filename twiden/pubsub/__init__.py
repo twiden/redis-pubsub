@@ -32,7 +32,7 @@ class Subscriber(object):
             try:
                 data = json.loads(message['data'])
             except TypeError:
-                self.logger.warning(what='json_parse_error', raw=message['data'])
+                self.logger.warning(what='json_parse_error')
                 continue
 
             meta = data['_meta']
