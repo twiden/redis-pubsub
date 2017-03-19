@@ -39,7 +39,7 @@ class Subscriber(object):
                     start = timer()
                     handler(copy.deepcopy(data))
                     end = timer()
-                    self.logger.info(what='handler_ok', message=message['data'], time=end - start)
+                    self.logger.info(what='handler_ok', message=data, time=end - start)
             except Exception:
                 etype, value, tb = sys.exc_info()
                 self.logger.error(
