@@ -2,6 +2,7 @@ import redis
 import uuid
 import json
 import socket
+import sys, traceback
 from timeit import default_timer as timer
 from datetime import datetime
 from twiden import logging
@@ -19,7 +20,7 @@ class Subscriber(object):
     """Publish a message to channel
     @param: handler A callable
     @param: filters A list of _meta fields mapping to boolean functions
-	"""
+    """
     def subscribe(self, handler, filters):
         pubsub = self.redis.pubsub()
         pubsub.subscribe([CHANNEL])
@@ -34,8 +35,15 @@ class Subscriber(object):
                     handler(data)
                     end = timer()
                     self.logger.info(what='handler ok', message=data, time=end - start)
-            except Exception as ex:
-                self.logger.error(what='handler failed', message=data, exception=str(ex))
+            except Exception:
+                etype, value, tb = sys.exc_info()
+                self.logger.error(
+                    what='handler failed',
+                    message=data,
+                    exception_type=etype,
+                    exception_value=value,
+                    traceback=tb,
+                )
 
 
 class Publisher(object):
@@ -55,16 +63,19 @@ class Publisher(object):
     """
     def publish(self, data, topic, version, causation_id=None, correlation_id=None):
         message = data.copy()
-        message.update({'_meta': {
-            'id': str(uuid.uuid1()),
-            'version': version,
-            'topic': topic,
-            'utc_timestamp': datetime.utcnow().isoformat(),
-            'causation_id': causation_id,
-            'correlation_id': correlation_id,
-            'hostname': socket.gethostname(),
-            'ip_address': socket.gethostbyname(socket.gethostname())
+        message.update(
+            {
+                '_meta': {
+                    'id': str(uuid.uuid1()),
+                    'version': version,
+                    'topic': topic,
+                    'utc_timestamp': datetime.utcnow().isoformat(),
+                    'causation_id': causation_id,
+                    'correlation_id': correlation_id,
+                    'hostname': socket.gethostname(),
+                    'ip_address': socket.gethostbyname(socket.gethostname())
+                }
             }
-        })
+        )
         self.redis.publish(CHANNEL, json.dumps(message))
         self.logger.info(what='message published', message=message)
