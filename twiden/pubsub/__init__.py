@@ -42,9 +42,8 @@ class Subscriber(object):
                     message=data,
                     exception_type=etype,
                     exception_value=value,
-                    traceback=tb,
+                    traceback=''.join(traceback.format_exception(etype, value, tb)),
                 )
-
 
 class Publisher(object):
 
