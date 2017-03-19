@@ -25,15 +25,18 @@ class Subscriber(object):
     def subscribe(self, handler, filters):
         pubsub = self.redis.pubsub()
         pubsub.subscribe([CHANNEL])
-        self.logger.info(what='waiting for messages')
+        self.logger.info(what='subscribed')
         for message in pubsub.listen():
             data = {}
+
             try:
                 data = json.loads(message['data'])
-                meta = data['_meta']
             except TypeError:
-                self.logger.warning(what='received_invalid_message')
+                self.logger.warning(what='json_parse_error', raw=message['data'])
                 continue
+
+            meta = data['_meta']
+
             try:
                 if all(validator(meta.get(field)) for field, validator in filters.items()):
                     start = timer()
@@ -81,4 +84,4 @@ class Publisher(object):
             }
         )
         self.redis.publish(CHANNEL, json.dumps(message))
-        self.logger.info(what='message published', message=message)
+        self.logger.info(what='publish', message=message)
