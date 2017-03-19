@@ -34,12 +34,12 @@ class Subscriber(object):
                     start = timer()
                     handler(data)
                     end = timer()
-                    self.logger.info(what='handler ok', message=data, time=end - start)
+                    self.logger.info(what='handler_ok', message=message['data'], time=end - start)
             except Exception:
                 etype, value, tb = sys.exc_info()
                 self.logger.error(
-                    what='handler failed',
-                    message=data,
+                    what='handler_failed',
+                    message=message['data'],
                     exception_type=etype,
                     exception_value=value,
                     traceback=''.join(traceback.format_exception(etype, value, tb)),
