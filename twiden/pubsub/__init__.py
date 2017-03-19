@@ -31,6 +31,9 @@ class Subscriber(object):
 
             try:
                 data = json.loads(message['data'].decode('utf8'))
+            except AttributeError:
+                self.logger.warning(what='message_decode_error')
+                continue
             except TypeError:
                 self.logger.warning(what='json_parse_error')
                 continue
