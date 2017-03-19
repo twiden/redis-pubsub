@@ -30,7 +30,7 @@ class Subscriber(object):
             data = {}
 
             try:
-                data = json.loads(message['data'])
+                data = json.loads(message['data'].decode('utf8'))
             except TypeError:
                 self.logger.warning(what='json_parse_error')
                 continue
