@@ -30,7 +30,6 @@ class Subscriber(object):
             try:
                 data = json.loads(message['data'])
                 meta = data['_meta']
-                self.logger.info(what='handler_ok', message=message['data'])
             except TypeError:
                 self.logger.warning(what='received_invalid_message')
                 continue
