@@ -40,8 +40,6 @@ class Subscriber(object):
                 self.logger.error(
                     what='handler_failed',
                     message=message['data'],
-                    exception_type=etype,
-                    exception_value=value,
                     traceback=''.join(traceback.format_exception(etype, value, tb)),
                 )
 
