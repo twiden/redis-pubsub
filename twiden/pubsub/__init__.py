@@ -1,8 +1,8 @@
-import redis
 import uuid
 import json
 import socket
-import sys, traceback
+import sys
+import traceback
 from timeit import default_timer as timer
 from datetime import datetime
 from twiden import logging
@@ -44,6 +44,7 @@ class Subscriber(object):
                     exception_value=value,
                     traceback=''.join(traceback.format_exception(etype, value, tb)),
                 )
+
 
 class Publisher(object):
 
