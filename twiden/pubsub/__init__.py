@@ -32,10 +32,7 @@ class Subscriber(object):
                 meta = data['_meta']
                 self.logger.info(what='handler_ok', message=message['data'])
             except TypeError:
-                self.logger.warning(
-                    what='message_is_not_json',
-                    message_id=message['_meta']['id'],
-                )
+                self.logger.warning(what='received_invalid_message')
                 continue
             try:
                 if all(validator(meta.get(field)) for field, validator in filters.items()):
