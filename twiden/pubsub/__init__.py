@@ -3,6 +3,7 @@ import json
 import socket
 import sys
 import traceback
+import copy
 from timeit import default_timer as timer
 from datetime import datetime
 from twiden import logging
@@ -36,14 +37,14 @@ class Subscriber(object):
             try:
                 if all(validator(meta.get(field)) for field, validator in filters.items()):
                     start = timer()
-                    handler(data)
+                    handler(copy.deepcopy(data))
                     end = timer()
                     self.logger.info(what='handler_ok', message=message['data'], time=end - start)
             except Exception:
                 etype, value, tb = sys.exc_info()
                 self.logger.error(
                     what='handler_failed',
-                    message=message['data'],
+                    message=data,
                     traceback=''.join(traceback.format_exception(etype, value, tb)),
                 )
 
