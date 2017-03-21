@@ -13,6 +13,25 @@ import time
 CHANNEL = 'twiden'
 
 
+def connect(redis_host):
+    logger = logging.getLogger('redis.connect')
+    max_iter = 5
+    i = 0
+    s = 0
+
+    while i < max_iter:
+        try:
+            conn = redis.Redis(host=redis_host)
+            logger.info(tag='redis.connect.success', attempt=i, channel=CHANNEL)
+            return conn
+        except redis.exceptions.ConnectionError:
+            s = s**2 or 2
+            logger.warning(tag='redis.unavailable', sleep=s, attempt=i, channel=CHANNEL)
+            time.sleep(s)
+
+    logger.error(tag='redis.connect.error', attempt=i, channel=CHANNEL)
+
+
 class PubsubException(Exception):
     pass
 
@@ -53,10 +72,10 @@ class Subscriber(object):
             try:
                 data = json.loads(message['data'].decode('utf8'))
             except AttributeError:
-                self.logger.warning(tag='redis.event.decode_error')
+                self.logger.warning(tag='redis.event.decode_error', channel=CHANNEL)
                 continue
             except TypeError:
-                self.logger.warning(tag='redis.event.parse_error')
+                self.logger.warning(tag='redis.event.parse_error', channel=CHANNEL)
                 continue
 
             meta = data['_meta']
@@ -67,15 +86,16 @@ class Subscriber(object):
                     start = timer()
                     handler(copy.deepcopy(data))
                     end = timer()
-                    self.logger.info(tag='redis.event.handler.success', message=data, time=end - start)
+                    self.logger.info(tag='redis.event.handler.success', message=data, time=end - start, channel=CHANNEL)
                 else:
-                    self.logger.info(tag='redis.event.ignored', message=data)
+                    self.logger.info(tag='redis.event.ignored', message=data, channel=CHANNEL)
             except Exception:
                 etype, value, tb = sys.exc_info()
                 self.logger.error(
                     tag='redis.event.handler.error',
                     message=data,
                     traceback=''.join(traceback.format_exception(etype, value, tb)),
+                    channel=CHANNEL
                 )
 
 
